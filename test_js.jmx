@@ -46,35 +46,6 @@
         <hashTree/>
       </hashTree>
 
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="JS-MQTT-Workload">
-        <intProp name="ThreadGroup.num_threads">50</intProp>
-        <intProp name="ThreadGroup.ramp_time">10</intProp>
-        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController">
-          <intProp name="LoopController.loops">-1</intProp>
-        </elementProp>
-      </ThreadGroup>
-      <hashTree>
-        <net.xmeter.samplers.ConnectSampler guiclass="net.xmeter.gui.ConnectGui" testclass="net.xmeter.samplers.ConnectSampler" testname="MQTT Connect">
-          <stringProp name="mqtt.server">192.168.122.44</stringProp>
-          <stringProp name="mqtt.port">1883</stringProp>
-          <stringProp name="mqtt.version">3.1.1</stringProp>
-          <stringProp name="mqtt.conn_timeout">10</stringProp>
-          <stringProp name="mqtt.keep_alive">300</stringProp>
-        </net.xmeter.samplers.ConnectSampler>
-        <hashTree/>
-        <net.xmeter.samplers.PubSampler guiclass="net.xmeter.gui.PubGui" testclass="net.xmeter.samplers.PubSampler" testname="MQTT Publish">
-          <stringProp name="mqtt.topic_name">test/topic</stringProp>
-          <stringProp name="mqtt.qos_level">1</stringProp>
-          <stringProp name="mqtt.payload">{&quot;data&quot;: &quot;Message ${__threadNum}&quot;}</stringProp>
-        </net.xmeter.samplers.PubSampler>
-        <hashTree>
-          <ConstantTimer guiclass="TestBeanGUI" testclass="ConstantTimer" testname="1s Interval">
-            <doubleProp><name>delay</name><value>1000.0</value></doubleProp>
-          </ConstantTimer>
-          <hashTree/>
-        </hashTree>
-      </hashTree>
-
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="JS-REST-Workload">
         <stringProp name="ThreadGroup.num_threads">5</stringProp>
         <stringProp name="ThreadGroup.ramp_time">10</stringProp>
