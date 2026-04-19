@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
   <hashTree>
-    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Plano Unificado Python - Carga 150 RPS Global">
-      <collectionProp name="TestPlan.user_defined_variables"/>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Plano Unificado Python - Corrigido">
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
     </TestPlan>
     <hashTree>
-
-      <ConstantThroughputTimer guiclass="TestBeanGUI" testclass="ConstantThroughputTimer" testname="Limitador 150 RPS Global">
+      <ConstantThroughputTimer guiclass="TestBeanGUI" testclass="ConstantThroughputTimer" testname="Limitador 94 RPS">
         <doubleProp>
           <name>throughput</name>
-          <value>9000.0</value>
+          <value>5640.0</value>
         </doubleProp>
         <intProp name="calcMode">1</intProp>
       </ConstantThroughputTimer>
@@ -23,7 +24,7 @@
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP POST /api/message">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST /api/message">
           <stringProp name="HTTPSampler.domain">192.168.122.44</stringProp>
           <stringProp name="HTTPSampler.port">8081</stringProp>
           <stringProp name="HTTPSampler.path">/api/message</stringProp>
@@ -32,11 +33,32 @@
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
-                <stringProp name="Argument.value">{&quot;user&quot;: &quot;User_${__threadNum}&quot;, &quot;message&quot;: &quot;Mensagem Python HTTP&quot;}</stringProp>
+                <stringProp name="Argument.value">{&quot;user&quot;: &quot;User_${__threadNum}&quot;, &quot;message&quot;: &quot;Py HTTP&quot;}</stringProp>
               </elementProp>
             </collectionProp>
           </elementProp>
         </HTTPSamplerProxy>
+        <hashTree/>
+      </hashTree>
+
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Python-MQTT-Workload">
+        <intProp name="ThreadGroup.num_threads">50</intProp>
+        <intProp name="ThreadGroup.ramp_time">10</intProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController">
+          <intProp name="LoopController.loops">-1</intProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+        <net.xmeter.samplers.ConnectSampler guiclass="net.xmeter.gui.ConnectGui" testclass="net.xmeter.samplers.ConnectSampler" testname="MQTT Connect">
+          <stringProp name="mqtt.server">192.168.122.44</stringProp>
+          <stringProp name="mqtt.port">1884</stringProp>
+          <stringProp name="mqtt.version">3.1.1</stringProp>
+        </net.xmeter.samplers.ConnectSampler>
+        <hashTree/>
+        <net.xmeter.samplers.PubSampler guiclass="net.xmeter.gui.PubGui" testclass="net.xmeter.samplers.PubSampler" testname="MQTT Publish">
+          <stringProp name="mqtt.topic_name">test/topic</stringProp>
+          <stringProp name="mqtt.payload">{&quot;data&quot;: &quot;Py User ${__threadNum}&quot;}</stringProp>
+        </net.xmeter.samplers.PubSampler>
         <hashTree/>
       </hashTree>
 
@@ -48,7 +70,7 @@
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="REST POST /items/">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST /items/">
           <stringProp name="HTTPSampler.domain">192.168.122.44</stringProp>
           <stringProp name="HTTPSampler.port">8002</stringProp>
           <stringProp name="HTTPSampler.path">/items/</stringProp>
@@ -57,7 +79,7 @@
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
-                <stringProp name="Argument.value">{&quot;name&quot;: &quot;ItemPython&quot;, &quot;description&quot;: &quot;Python Aging Test&quot;}</stringProp>
+                <stringProp name="Argument.value">{&quot;id&quot;: ${__Random(1,99999)}, &quot;name&quot;: &quot;PyItem&quot;}</stringProp>
               </elementProp>
             </collectionProp>
           </elementProp>
@@ -73,11 +95,10 @@
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <TCPSampler guiclass="TCPSamplerGui" testclass="TCPSampler" testname="TCP Message Transfer">
+        <TCPSampler guiclass="TCPSamplerGui" testclass="TCPSampler" testname="TCP Message">
           <stringProp name="TCPSampler.server">192.168.122.44</stringProp>
           <stringProp name="TCPSampler.port">3001</stringProp>
-          <stringProp name="TCPSampler.ctimeout">1000</stringProp>
-          <stringProp name="TCPSampler.request">Test Data Python User ${__threadNum}\n</stringProp>
+          <stringProp name="TCPSampler.request">Py User ${__threadNum}\n</stringProp>
         </TCPSampler>
         <hashTree/>
       </hashTree>
