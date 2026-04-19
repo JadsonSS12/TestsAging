@@ -1,115 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
   <hashTree>
-    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Plano Unificado Python - Carga Multidomínio">
-      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments">
-        <collectionProp name="Arguments.arguments"/>
-      </elementProp>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Plano Unificado Python - Carga 150 RPS Global">
+      <collectionProp name="TestPlan.user_defined_variables"/>
     </TestPlan>
     <hashTree>
+
+      <ConstantThroughputTimer guiclass="TestBeanGUI" testclass="ConstantThroughputTimer" testname="Limitador 150 RPS Global">
+        <doubleProp>
+          <name>throughput</name>
+          <value>9000.0</value>
+        </doubleProp>
+        <intProp name="calcMode">1</intProp>
+      </ConstantThroughputTimer>
+      <hashTree/>
 
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Python-HTTP-Workload">
         <intProp name="ThreadGroup.num_threads">50</intProp>
         <intProp name="ThreadGroup.ramp_time">10</intProp>
-        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController">
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController">
           <intProp name="LoopController.loops">-1</intProp>
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Defaults">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP POST /api/message">
           <stringProp name="HTTPSampler.domain">192.168.122.44</stringProp>
           <stringProp name="HTTPSampler.port">8081</stringProp>
-          <stringProp name="HTTPSampler.protocol">http</stringProp>
-        </ConfigTestElement>
-        <hashTree/>
-        <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="JSON Header">
-          <collectionProp name="HeaderManager.headers">
-            <elementProp name="" elementType="Header">
-              <stringProp name="Header.name">Content-Type</stringProp>
-              <stringProp name="Header.value">application/json</stringProp>
-            </elementProp>
-          </collectionProp>
-        </HeaderManager>
-        <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST /api/message">
           <stringProp name="HTTPSampler.path">/api/message</stringProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
-                <stringProp name="Argument.value">{&quot;user&quot;: &quot;User_${__threadNum}&quot;, &quot;message&quot;: &quot;Mensagem Python Thread ${__threadNum}&quot;}</stringProp>
+                <stringProp name="Argument.value">{&quot;user&quot;: &quot;User_${__threadNum}&quot;, &quot;message&quot;: &quot;Mensagem Python HTTP&quot;}</stringProp>
               </elementProp>
             </collectionProp>
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET /health">
-          <stringProp name="HTTPSampler.path">/health</stringProp>
-          <stringProp name="HTTPSampler.method">GET</stringProp>
-        </HTTPSamplerProxy>
-        <hashTree/>
       </hashTree>
 
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Python-MQTT-Workload">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Python-REST-Workload">
         <intProp name="ThreadGroup.num_threads">50</intProp>
         <intProp name="ThreadGroup.ramp_time">10</intProp>
-        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController">
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController">
           <intProp name="LoopController.loops">-1</intProp>
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <net.xmeter.samplers.ConnectSampler guiclass="net.xmeter.gui.ConnectGui" testclass="net.xmeter.samplers.ConnectSampler" testname="MQTT Connect">
-          <stringProp name="mqtt.server">192.168.122.44</stringProp>
-          <stringProp name="mqtt.port">1884</stringProp>
-          <stringProp name="mqtt.version">3.1.1</stringProp>
-          <stringProp name="mqtt.conn_timeout">10</stringProp>
-          <stringProp name="mqtt.keep_alive">300</stringProp>
-          <stringProp name="mqtt.client_id_prefix">worker_py_</stringProp>
-        </net.xmeter.samplers.ConnectSampler>
-        <hashTree/>
-        <net.xmeter.samplers.PubSampler guiclass="net.xmeter.gui.PubGui" testclass="net.xmeter.samplers.PubSampler" testname="MQTT Publish Data">
-          <stringProp name="mqtt.topic_name">test/topic</stringProp>
-          <stringProp name="mqtt.qos_level">1</stringProp>
-          <stringProp name="mqtt.payload">{&quot;data&quot;: &quot;Sample Message from Python User ${__threadNum}&quot;}</stringProp>
-        </net.xmeter.samplers.PubSampler>
-        <hashTree>
-          <ConstantTimer guiclass="TestBeanGUI" testclass="ConstantTimer" testname="1s Interval">
-            <doubleProp><name>delay</name><value>1000.0</value></doubleProp>
-          </ConstantTimer>
-          <hashTree/>
-        </hashTree>
-      </hashTree>
-
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Python-REST-Workload">
-        <stringProp name="ThreadGroup.num_threads">50</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">10</stringProp>
-        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController">
-          <stringProp name="LoopController.loops">-1</stringProp>
-        </elementProp>
-      </ThreadGroup>
-      <hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST /items/">
-          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-            <collectionProp name="Arguments.arguments">
-              <elementProp name="" elementType="HTTPArgument">
-                <stringProp name="Argument.value">{&quot;id&quot;: ${__Random(1,99999)}, &quot;name&quot;: &quot;PyLoadItem&quot;, &quot;price&quot;: 19.99, &quot;description&quot;: &quot;Python Aging Test&quot;}</stringProp>
-              </elementProp>
-            </collectionProp>
-          </elementProp>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="REST POST /items/">
           <stringProp name="HTTPSampler.domain">192.168.122.44</stringProp>
           <stringProp name="HTTPSampler.port">8002</stringProp>
           <stringProp name="HTTPSampler.path">/items/</stringProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <stringProp name="Argument.value">{&quot;name&quot;: &quot;ItemPython&quot;, &quot;description&quot;: &quot;Python Aging Test&quot;}</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
       </hashTree>
 
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Python-TCP-Workload">
-        <stringProp name="ThreadGroup.num_threads">50</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">10</stringProp>
-        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController">
+        <intProp name="ThreadGroup.num_threads">50</intProp>
+        <intProp name="ThreadGroup.ramp_time">10</intProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController">
           <intProp name="LoopController.loops">-1</intProp>
         </elementProp>
       </ThreadGroup>
@@ -118,11 +77,10 @@
           <stringProp name="TCPSampler.server">192.168.122.44</stringProp>
           <stringProp name="TCPSampler.port">3001</stringProp>
           <stringProp name="TCPSampler.ctimeout">1000</stringProp>
-          <stringProp name="TCPSampler.request">Test Data from Python User ${__threadNum}\n</stringProp>
+          <stringProp name="TCPSampler.request">Test Data Python User ${__threadNum}\n</stringProp>
         </TCPSampler>
         <hashTree/>
       </hashTree>
-
     </hashTree>
   </hashTree>
 </jmeterTestPlan>
